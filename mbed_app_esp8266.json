@@ -9,10 +9,12 @@
             "value": "\"PASSWORD\""
         },
         "wifi-tx": {
+            "macro_name": "MBED_CONF_ESP8266_TX",
             "help": "TX pin for serial connection to external device",
             "value": "D1"
         },
         "wifi-rx": {
+            "macro_name": "MBED_CONF_ESP8266_RX",
             "help": "RX pin for serial connection to external device",
             "value": "D0"
         }
@@ -32,6 +34,10 @@
         "NUCLEO_F401RE": {
             "wifi-tx": "D8",
             "wifi-rx": "D2"
+        },
+        "GAP8": {
+            "wifi-tx": "UART_TX",
+            "wifi-rx": "UART_RX"
         }
     }
 }

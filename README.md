@@ -1,68 +1,63 @@
 # mbed-os-example-wifi #
 
-Wi-Fi example for Mbed OS
+This guide reviews the steps required to get external wifi module working on an mbed OS platform in GAP8, it only support ESP8266 now. For more details, please find in [mbed-os-example-wifi](https://github.com/ARMmbed/mbed-os-example-wifi)
 
-## Getting started with the Wi-Fi API ##
+Please install [mbed CLI](https://github.com/ARMmbed/mbed-cli#installing-mbed-cli).
 
-This is an example of a Wi-Fi application using the Wi-Fi and network socket APIs that [Mbed OS](https://github.com/ARMmbed/mbed-os) provides.
+## Import the example application
 
-The program brings up the Wi-Fi and the underlying network interface and uses it to scan available networks, connects to a network, prints interface and connection details and performs an HTTP operation.
-
-For more information about Wi-Fi APIs, please visit the [Mbed OS Wi-Fi](https://os.mbed.com/docs/latest/reference/wi-fi.html) documentation.
-
-### Supported hardware ###
-
-* All Mbed OS boards with build-in Wi-Fi module:
-    * [u-blox ODIN-W2](https://os.mbed.com/platforms/ublox-EVK-ODIN-W2/)
-    * [Realtek RTL8195AM](https://os.mbed.com/platforms/REALTEK-RTL8195AM/)
-    * [ST DISCO IOT board](https://os.mbed.com/platforms/ST-Discovery-L475E-IOT01A/) with integrated [ISM43362 WiFi Inventek module](https://github.com/ARMmbed/wifi-ism43362).
-    * [ST DISCO_F413ZH board](https://os.mbed.com/platforms/ST-Discovery-F413H/) with integrated [ISM43362 WiFi Inventek module](https://github.com/ARMmbed/wifi-ism43362).
-    * [Advantech WISE-150](https://os.mbed.com/modules/advantech-wise-1530/)
-    * USI WM-BN-BM-22
-    * MxChip EMW3166
-* Boards with external WiFi shields.
-    * [NUCLEO-F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) with [X-NUCLEO-IDW04A1](http://www.st.com/content/st_com/en/products/ecosystems/stm32-open-development-environment/stm32-nucleo-expansion-boards/stm32-ode-connect-hw/x-nucleo-idw04a1.html) Wi-Fi expansion board using pins D8 and D2 _(of the Arduino connector)_.
-    * [NUCLEO-F401RE](https://os.mbed.com/platforms/ST-Nucleo-F401RE/) with [X-NUCLEO-IDW01M1](https://os.mbed.com/components/X-NUCLEO-IDW01M1/) Wi-Fi expansion board using pins PA_9 and PA_10 _(of the Morpho connector)_.
-    * [NUCLEO-F429ZI](https://os.mbed.com/platforms/ST-Nucleo-F429ZI/) with ESP8266-01 module using pins D1 and D0.
-    * [NUCLEO-L476RG](https://os.mbed.com/platforms/ST-Nucleo-L476RG/) with ESP8266-01 module using pins D8 and D2.
-    * Other Mbed targets with an ESP8266 module, [X-NUCLEO-IDW04A1](http://www.st.com/content/st_com/en/products/ecosystems/stm32-open-development-environment/stm32-nucleo-expansion-boards/stm32-ode-connect-hw/x-nucleo-idw04a1.html) or [X-NUCLEO-IDW01M1](https://os.mbed.com/components/X-NUCLEO-IDW01M1/) expansion board.
-
-#### Adding connectivity driver
-
-If the target does not have internal WiFi driver, or Mbed OS does not supply one, you need to add driver to your application and configure it to provide default WiFi interface.
+From the command-line, get the example:
 
 ```
-mbed add <driver>
+mbed import https://github.com/GreenWaves-Technologies/mbed-os-example-wifi
+cd mbed-os-example-wifi
 ```
 
-For example adding ISM43362 driver `mbed add wifi-ism43362` or ESP8266 `mbed add esp8266-driver` or X-Nucleo-IDW01M1 driver `mbed add wifi-x-nucleo-idw01m1`
+For problem of `hg` tool
+```
+sudo apt-get install mercurial
+```
+or
+```
+sudo yum install mercurial
+```
 
-Then pin names need to be configured as instructed in the drivers README file.
+For problem of `python missing module`, try following commands according to your python version :
+```
+sudo pip install mbed-cli
+sudo pip install -r mbed-os/requirements.txt
 
-#### Connecting the ESP8266 ####
+sudo pip2 install mbed-cli
+sudo pip2 install -r mbed-os/requirements.txt
 
-To connect the ESP8266 module to your development board, look at the [ESP8266 Cookbook page](https://developer.mbed.org/users/4180_1/notebook/using-the-esp8266-with-the-mbed-lpc1768/). In general, this means hooking up the ESP8266 TX pin to `D0` and the ESP8266 RX pin to `D1` on your development board.
+sudo pip3 install mbed-cli
+sudo pip3 install -r mbed-os/requirements.txt
+```
 
-**Note:** On NUCLEO development boards, pins `D0` and `D1` are used for serial communication with the computer. Use pins `D8` (to ESP8266 TX) and `D2` (to ESP8266 RX) instead.
+## Or use `git clone` to get the example :
+```
+git clone https://github.com/GreenWaves-Technologies/mbed-os-example-wifi
+cd mbed-os-example-wifi
+mbed deploy
+mbed config -G GCC_RISCV_PATH "/usr/lib/gap_riscv_toolchain/bin"
+```
 
-#### Connecting the X-NUCLEO-IDW0XX1 ####
+If you find that the mbed-os git verison size (which includes all git history about 400 MB) is too large to download,
+you can download [gwt-mbed-os-wifi](https://github.com/GreenWaves-Technologies/mbed-os/releases/tag/gwt-mbed-os-wifi) or :
 
-To connect the [X-NUCLEO-IDW04A1](http://www.st.com/content/st_com/en/products/ecosystems/stm32-open-development-environment/stm32-nucleo-expansion-boards/stm32-ode-connect-hw/x-nucleo-idw04a1.html) or [X-NUCLEO-IDW01M1](https://developer.mbed.org/components/X-NUCLEO-IDW01M1/) expansion board to your NUCLEO development board, plug the expansion board on top of the NUCLEO board using the Arduino or Morpho connector.
+```
+wget https://codeload.github.com/GreenWaves-Technologies/mbed-os/zip/gwt-mbed-os-wifi
+mv gwt-mbed-os-wifi gwt-mbed-os-wifi.zip
+unzip -qq gwt-mbed-os-wifi.zip
+mv mbed-os-gwt-mbed-os-wifi mbed-os
+```
+which is only 20 MB, then uncompress it and rename it to `mbed-os` in your directory.
 
-##  Getting started ##
-
-1. Import the example.
-
-   ```
-   mbed import mbed-os-example-wifi
-   cd mbed-os-example-wifi
-   ```
-
-1. Configure the Wi-Fi shield and settings.
+### Configure the Wi-Fi shield and settings.
 
    Edit ```mbed_app.json``` to include the correct Wi-Fi shield, SSID and password:
 
-   ```
+```json
 {
     "config": {
         "wifi-ssid": {
@@ -81,52 +76,75 @@ To connect the [X-NUCLEO-IDW04A1](http://www.st.com/content/st_com/en/products/e
         }
     }
 }
-
-   ```
+```
 
    For build-in WiFi, you do not need to set any `provide-default` values. Those are required
    if you use external WiFi shield.
 
    Sample ```mbed_app.json``` files are provided for ESP8266 (```mbed_app_esp8266.json```), X-NUCLEO-IDW04A1 (```mbed_app_idw04a1.json```) and X-NUCLEO-IDW01M1 (```mbed_app_idw01m1```).
 
+### Now compile
 
-1. Compile and generate binary.
-    For example, for `GCC`:
-    ```
-    mbed compile -t GCC_ARM -m UBLOX_EVK_ODIN_W2
-    ```
+Invoke `mbed compile`, and specify the name of your platform and your favorite toolchain (`GCC_ARM`, `ARM`, `IAR`, `GCC_RISCV`). For example, for the RISC-V GCC Compile :
 
-1. Open a serial console session with the target platform using the following parameters:
-    * **Baud rate:** 9600
-    * **Data bits:** 8
-    * **Stop bits:** 1
-    * **Parity:** None
+```
+mbed compile -m GAP8 -t GCC_RISCV
+```
 
-1. Copy or drag the application `mbed-os-example-wifi.bin` in the folder `mbed-os-example-wifi/BUILD/<TARGET NAME>/<PLATFORM NAME>` onto the target board.
+Your PC may take a few minutes to compile your code. At the end, you see the following result:
 
-1. The serial console should display a similar output to below, indicating a successful Wi-Fi connection:
-    ```
-    WiFi example
+```
+Elf2Bin: mbed-os-example-wifi
+| Module          |      .text |    .data |     .bss |
+|-----------------|------------|----------|----------|
+| BUILD/GAP8      |  49212(-2) |  768(+0) | 4688(-8) |
+| [fill]          |      2(+0) |    0(+0) |   32(+0) |
+| [lib]/c.a       |  53786(+0) | 2480(+0) |   60(+0) |
+| [lib]/gcc.a     |  17716(+0) |    0(+0) |    0(+0) |
+| [lib]/stdc++.a  |      0(+0) |    0(+0) |    0(+0) |
+| mbed-os/targets |    288(+0) |    4(+0) |   28(+0) |
+| Subtotals       | 121004(-2) | 3252(+0) | 4808(-8) |
+Total Static RAM memory (data + bss): 8060(-8) bytes
+Total Flash memory (text + data): 124256(-2) bytes
 
-    Scan:
-    Network: Dave Hot Spot secured: Unknown BSSID: 00:01:02:03:04:05 RSSI: -58 Ch: 1
-    1 network available.
+Image: ./BUILD/GAP8/GCC_RISCV/mbed-os-example-wifi.bin
+```
 
-    Connecting...
-    Success
+### Program your board
 
-    MAC: 00:01:02:03:04:05
-    IP: 192.168.0.5
-    Netmask: 255.255.255.0
-    Gateway: 192.168.0.1
-    RSSI: -27
+1. Connect your device (with sensor board) to the computer over USB.
+1. Execute the script (make sure you have already install the [gap_sdk](https://github.com/GreenWaves-Technologies/gap_sdk)) :
 
-    Sending HTTP request to www.arm.com...
-    sent 38 [GET / HTTP/1.1]
-    recv 64 [HTTP/1.1 301 Moved Permanently]
+```
+source ./USER_PATH/gap_sdk/sourceme.sh
+run_mbed ./BUILD/GAP8/GCC_RISCV/mbed-os-example-wifi.elf
+```
 
-    Done
-    ```
+### Result
+The terminal should display a similar output to below, indicating a successful Wi-Fi connection:
+```
+WiFi example
+Mbed OS version 5.10.0
+
+Scan:
+Network: Dave Hot Spot secured: Unknown BSSID: 00:01:02:03:04:05 RSSI: -58 Ch: 1
+1 network available.
+
+Connecting to `SSID`...
+Success
+
+MAC: 00:01:02:03:04:05
+IP: 192.168.0.5
+Netmask: 255.255.255.0
+Gateway: 192.168.0.1
+RSSI: -27
+
+Sending HTTP request to www.arm.com...
+sent 38 [s]
+recv 64 [s]
+
+Done
+```
 
 ## Troubleshooting
 

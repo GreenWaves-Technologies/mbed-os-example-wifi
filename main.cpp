@@ -63,7 +63,7 @@ int scan_demo(WiFiInterface *wifi)
     }
 
     for (int i = 0; i < count; i++) {
-        printf("Network: %s secured: %s BSSID: %hhX:%hhX:%hhX:%hhx:%hhx:%hhx RSSI: %hhd Ch: %hhd\n", ap[i].get_ssid(),
+        printf("Network: %s secured: %s BSSID: %02X:%02X:%02X:%02x:%02x:%02x RSSI: %d Ch: %d\n", ap[i].get_ssid(),
                sec2str(ap[i].get_security()), ap[i].get_bssid()[0], ap[i].get_bssid()[1], ap[i].get_bssid()[2],
                ap[i].get_bssid()[3], ap[i].get_bssid()[4], ap[i].get_bssid()[5], ap[i].get_rssi(), ap[i].get_channel());
     }
@@ -144,6 +144,9 @@ int main()
         printf("No WIFI APNs found - can't continue further.\n");
         return -1;
     }
+
+    // Disconnect to avoid device already auto connected
+    wifi->disconnect();
 
     printf("\nConnecting to %s...\n", MBED_CONF_APP_WIFI_SSID);
     int ret = wifi->connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
