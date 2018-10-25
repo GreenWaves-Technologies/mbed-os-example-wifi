@@ -78,7 +78,7 @@ void http_demo(NetworkInterface *net)
     TCPSocket socket;
     nsapi_error_t response;
 
-    printf("Sending HTTP request to www.arm.com...\n");
+    printf("Sending HTTP request to www.thingspeak.com...\n");
 
     // Open a socket on the network interface, and create a TCP connection to www.arm.com
     response = socket.open(net);
@@ -87,17 +87,16 @@ void http_demo(NetworkInterface *net)
         return;
     }
 
-    response = socket.connect("api.ipify.org", 80);
+    response = socket.connect("api.thingspeak.com", 80);
     if(0 != response) {
         printf("Error connecting: %d\n", response);
         socket.close();
         return;
     }
 
-    // Send a simple http request
-    char sbuffer[] = "GET / HTTP/1.1\r\nHost: api.ipify.org\r\nConnection: close\r\n\r\n";
+    // Send a simple http request, write field1 with value 17, replace API_KEYS with your right write key
+    char sbuffer[] = "GET /update?key=[API_KEYS]&field1=17 \r\nHost: api.thingspeak.com\r\nConnection: close\r\n\r\n";
     nsapi_size_t size = strlen(sbuffer);
-    char pbuffer[40];
 
     // Loop until whole request send
     while(size) {
@@ -108,20 +107,16 @@ void http_demo(NetworkInterface *net)
             return;
         }
         size -= response;
-        memset(pbuffer, 0, sizeof(pbuffer));
-        memcpy(pbuffer, sbuffer, strstr(sbuffer, "\r\n")-sbuffer);
-        printf("sent %d [%s]\n", response, pbuffer);
+        printf("sent %d\n", response);
     }
 
     // Receieve a simple http response and print out the response line
-    char rbuffer[64];
+    char rbuffer[10];
     response = socket.recv(rbuffer, sizeof rbuffer);
     if (response < 0) {
         printf("Error receiving data: %d\n", response);
     } else {
-        memset(pbuffer, 0, sizeof(pbuffer));
-        memcpy(pbuffer, rbuffer, strstr(rbuffer, "\r\n")-rbuffer);
-        printf("recv %d [%s]\n", response, pbuffer);
+        printf("recv %d [Times = %s]\n", response, rbuffer);
     }
 
     // Close the socket to return its memory and bring down the network interface
