@@ -124,7 +124,7 @@ run_mbed ./BUILD/GAP8/GCC_RISCV/mbed-os-example-wifi.elf
 The terminal should display a similar output to below, indicating a successful Wi-Fi connection:
 ```
 WiFi example
-Mbed OS version 5.10.0
+Mbed OS version 5.10.2
 
 Scan:
 Network: Dave Hot Spot secured: Unknown BSSID: 00:01:02:03:04:05 RSSI: -58 Ch: 1
