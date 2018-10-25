@@ -97,6 +97,7 @@ void http_demo(NetworkInterface *net)
     // Send a simple http request
     char sbuffer[] = "GET / HTTP/1.1\r\nHost: api.ipify.org\r\nConnection: close\r\n\r\n";
     nsapi_size_t size = strlen(sbuffer);
+    char pbuffer[40];
 
     // Loop until whole request send
     while(size) {
@@ -107,7 +108,8 @@ void http_demo(NetworkInterface *net)
             return;
         }
         size -= response;
-        printf("sent %d [%.*s]\n", response, strstr(sbuffer, "\r\n")-sbuffer, sbuffer);
+        memcpy(pbuffer, sbuffer, strstr(sbuffer, "\r\n")-sbuffer);
+        printf("sent %d [%s]\n", response, pbuffer);
     }
 
     // Receieve a simple http response and print out the response line
@@ -116,7 +118,8 @@ void http_demo(NetworkInterface *net)
     if (response < 0) {
         printf("Error receiving data: %d\n", response);
     } else {
-        printf("recv %d [%.*s]\n", response, strstr(rbuffer, "\r\n")-rbuffer, rbuffer);
+        memcpy(pbuffer, rbuffer, strstr(rbuffer, "\r\n")-rbuffer);
+        printf("recv %d [%s]\n", response, pbuffer);
     }
 
     // Close the socket to return its memory and bring down the network interface
