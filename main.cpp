@@ -108,6 +108,7 @@ void http_demo(NetworkInterface *net)
             return;
         }
         size -= response;
+        memset(pbuffer, 0, sizeof(pbuffer));
         memcpy(pbuffer, sbuffer, strstr(sbuffer, "\r\n")-sbuffer);
         printf("sent %d [%s]\n", response, pbuffer);
     }
@@ -118,6 +119,7 @@ void http_demo(NetworkInterface *net)
     if (response < 0) {
         printf("Error receiving data: %d\n", response);
     } else {
+        memset(pbuffer, 0, sizeof(pbuffer));
         memcpy(pbuffer, rbuffer, strstr(rbuffer, "\r\n")-rbuffer);
         printf("recv %d [%s]\n", response, pbuffer);
     }
